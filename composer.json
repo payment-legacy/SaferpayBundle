@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "payment/saferpay-bundle": "master"
+        "payment/saferpay": "master"
     },
     "require-dev": {
         "symfony/config": "2.1.*",
