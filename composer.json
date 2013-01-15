@@ -1,0 +1,32 @@
+{
+    "name": "payment/saferpay-bundle",
+    "type": "symfony-bundle",
+    "description": "Saferpay payment service library for symfony",
+    "keywords": ["saferpay", "payment", "e-commerce", "symfony"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dominik Zogg",
+            "email": "dominik.zogg@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "payment/saferpay-bundle": "master"
+    },
+    "require-dev": {
+        "symfony/config": "2.1.*",
+        "symfony/http-kernel": "2.1.*",
+        "symfony/dependency-injection": "2.1.*",
+        "payment/saferpay-guzzle": "master"
+    },
+    "suggest": {
+        "payment/saferpay-buzz": "master",
+        "payment/saferpay-guzzle": "master"
+    },
+    "autoload": {
+        "psr-0": { "Payment\\Bundle\\SaferpayBundle\\": "" }
+    },
+    "target-dir": "Payment/Bundle/SaferpayBundle",
+    "minimum-stability": "dev"
+}
