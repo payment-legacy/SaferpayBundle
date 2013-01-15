@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 
-class IbrowsSaferpayExtension extends Extension
+class PaymentSaferpayExtension extends Extension
 {
     /**
      * @param array $configs
