@@ -16,11 +16,11 @@ class Configuration
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('init')->defaultValue('https://www.saferpay.com/hosting/CreatePayInit.asp')->cannotBeEmpty()->end()
-                            ->scalarNode('init')->defaultValue('https://www.saferpay.com/hosting/VerifyPayConfirm.asp')->cannotBeEmpty()->end()
-                            ->scalarNode('init')->defaultValue('https://www.saferpay.com/hosting/PayCompleteV2.asp')->cannotBeEmpty()->end()
+                            ->scalarNode('confirm')->defaultValue('https://www.saferpay.com/hosting/VerifyPayConfirm.asp')->cannotBeEmpty()->end()
+                            ->scalarNode('complete')->defaultValue('https://www.saferpay.com/hosting/PayCompleteV2.asp')->cannotBeEmpty()->end()
                         ->end()
                     ->end()
-                    ->arrayNode('urls')
+                    ->arrayNode('validators')
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->arrayNode('init')
@@ -111,12 +111,13 @@ class Configuration
                                     ->scalarNode('LANGID')->defaultValue('CH')->cannotBeEmpty()->end()
                                 ->end()
                             ->end()
-                            ->arrayNode('confirm')->end()
-                            ->arrayNode('complete')->end()
+                            ->arrayNode('confirm')->addDefaultsIfNotSet()->end()
+                            ->arrayNode('complete')->addDefaultsIfNotSet()->end()
                         ->end()
                     ->end()
                 ->end()
             ->end()
         ;
+        return $treeBuilder->buildTree();
     }
 }
