@@ -25,5 +25,6 @@ $container
 
 $container
     ->setDefinition('payment.saferpay', new Definition('%payment.saferpay.class%'))
+    ->addMethodCall('setLogger', array(new Reference('logger')))
     ->addMethodCall('setConfig', array(new Reference('payment.saferpay.config')))
 ;
