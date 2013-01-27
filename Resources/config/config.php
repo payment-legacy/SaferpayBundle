@@ -20,27 +20,27 @@ $container
 ;
 $container
     ->setDefinition('payment.saferpay.config.validators.init', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.validators.init%'))
+    ->addMethodCall('all', array('%payment.saferpay.validators.init%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config.validators.confirm', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.validators.confirm%'))
+    ->addMethodCall('all', array('%payment.saferpay.validators.confirm%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config.validators.complete', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.validators.complete%'))
+    ->addMethodCall('all', array('%payment.saferpay.validators.complete%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config.defaults.init', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.defaults.init%'))
+    ->addMethodCall('all', array('%payment.saferpay.defaults.init%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config.defaults.confirm', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.defaults.confirm%'))
+    ->addMethodCall('all', array('%payment.saferpay.defaults.confirm%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config.defaults.complete', new Definition('%payment.saferpay.key_value.class%'))
-    ->addMethodCall('setAll', array('%payment.saferpay.defaults.complete%'))
+    ->addMethodCall('all', array('%payment.saferpay.defaults.complete%'))
 ;
 $container
     ->setDefinition('payment.saferpay.config', new Definition('%payment.saferpay.config.class%'))
