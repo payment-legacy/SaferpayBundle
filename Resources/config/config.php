@@ -58,5 +58,4 @@ $container
     ->setDefinition('payment.saferpay', new Definition('%payment.saferpay.class%'))
     ->addMethodCall('setKeyValuePrototype', array(new Reference($container->getParameter('payment.saferpay.key_value.service.id'))))
     ->addMethodCall('setConfig', array(new Reference($container->getParameter('payment.saferpay.config.service.id'))))
-    ->addMethodCall('setLogger', array(new Reference('logger')))
 ;
