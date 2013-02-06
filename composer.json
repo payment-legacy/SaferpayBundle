@@ -12,12 +12,12 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "payment/saferpay": "master"
-    },
-    "require-dev": {
+        "payment/saferpay": "master",
         "symfony/config": "2.1.*",
         "symfony/http-kernel": "2.1.*",
-        "symfony/dependency-injection": "2.1.*",
+        "symfony/dependency-injection": "2.1.*"
+    },
+    "require-dev": {
         "payment/saferpay-guzzle": "master"
     },
     "suggest": {
