@@ -111,7 +111,13 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
 
 ### httpclient
 
+#### buzz
+
     $saferpay->setHttpClient(new Payment\HttpClient\BuzzClient());
+
+#### guzzle
+
+    $saferpay->setHttpClient(new Payment\HttpClient\GuzzleClient());
 
 ### logger
 
