@@ -23,7 +23,7 @@ class PaymentSaferpayExtension extends Extension
         $processor = new Processor();
 
         // process the config
-        $config = $processor->process($configuration->getTree(), $configs);
+        $config = $processor->process($configuration->getConfigTreeBuilder()->buildTree(), $configs);
 
         // add parameter
         $container->setParameter('payment.saferpay.urls.init', $config['urls']['init']);

@@ -3,10 +3,14 @@
 namespace Payment\Bundle\SaferpayBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class Configuration
+class Configuration implements ConfigurationInterface
 {
-    public function getTree()
+    /**
+     * @return TreeBuilder
+     */
+    public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
         $treeBuilder
@@ -118,6 +122,6 @@ class Configuration
                 ->end()
             ->end()
         ;
-        return $treeBuilder->buildTree();
+        return $treeBuilder;
     }
 }
