@@ -133,11 +133,6 @@ class LoggerBridge implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
-        $denied = array('__construct', 'log');
-        if(in_array($level, $denied) OR !method_exists($this, $level)){
-            throw new \InvalidArgumentException(sprintf('Cannot log level "%s', $level));
-        }
-
-        return $this->$level($message, $context);
+        return $this->logger->log($level, $message, $context);
     }
 }
