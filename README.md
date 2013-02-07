@@ -25,6 +25,8 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
 
 ## usage
 
+### controller
+
     <?php
 
     namespace Payment\Bundle\SaferpayTestBundle\Controller;
@@ -107,10 +109,16 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
         }
     }
 
-## troubleshooting
-
-### you get the saferpay object instead of a redirect to saferpay
-
-please define a httpclient like buzz or guzzle
+### httpclient
 
     $saferpay->setHttpClient(new Payment\HttpClient\BuzzClient());
+
+### logger
+
+#### 2.1
+
+    $saferpay->setLogger(new Payment\Bundle\SaferpayBundle\Logger\LoggerBridge($this->container->get('logger')));
+
+#### 2.2
+
+    $saferpay->setLogger($this->container->get('logger'));
