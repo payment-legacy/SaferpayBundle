@@ -8,8 +8,7 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
 
     {
         "require": {
-            "payment/saferpay-bundle": "master",
-            "payment/saferpay-guzzle": "master"
+            "payment/saferpay-bundle": "master"
         }
     }
 
@@ -34,7 +33,6 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
     use Payment\Saferpay\Saferpay;
-    use Payment\Saferpay\Http\Client\GuzzleClient;
     use Symfony\Component\HttpFoundation\RedirectResponse;
     use Symfony\Component\HttpFoundation\Session\SessionInterface;
     use Symfony\Component\Routing\Router;
@@ -55,9 +53,6 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
 
             /** @var Saferpay $saferpay */
             $saferpay = $this->container->get('payment.saferpay');
-
-            // set http client
-            $saferpay->setHttpClient(new GuzzleClient());
 
             // set data
             $saferpay->setData($session->get('payment.saferpay.data'));
@@ -111,3 +106,11 @@ a simple inofficial implementation of the saferpay payment service as a symfony 
             if($die) { die(); }
         }
     }
+
+## troubleshooting
+
+### you get the saferpay object instead of a redirect to saferpay
+
+please define a httpclient like buzz or guzzle
+
+    $saferpay->setHttpClient(new Payment\HttpClient\BuzzClient());
