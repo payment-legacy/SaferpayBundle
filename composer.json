@@ -17,13 +17,6 @@
         "symfony/http-kernel": "2.1.*",
         "symfony/dependency-injection": "2.1.*"
     },
-    "require-dev": {
-        "payment/saferpay-guzzle": "master"
-    },
-    "suggest": {
-        "payment/saferpay-buzz": "master",
-        "payment/saferpay-guzzle": "master"
-    },
     "autoload": {
         "psr-0": { "Payment\\Bundle\\SaferpayBundle\\": "" }
     },
