@@ -2,126 +2,109 @@
 
 namespace Payment\Bundle\SaferpayBundle\DependencyInjection;
 
+use Payment\Saferpay\Saferpay;
+
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class Configuration implements ConfigurationInterface
 {
+    /**
+     * @var array
+     */
+    protected $saferpayConfig;
+
     /**
      * @return TreeBuilder
      */
     public function getConfigTreeBuilder()
     {
+        $this->saferpayConfig = Saferpay::getSaferpayConfig();
+
         $treeBuilder = new TreeBuilder();
-        $treeBuilder
-            ->root('payment_saferpay')
-                ->children()
-                    ->arrayNode('urls')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->scalarNode('init')->defaultValue('https://www.saferpay.com/hosting/CreatePayInit.asp')->cannotBeEmpty()->end()
-                            ->scalarNode('confirm')->defaultValue('https://www.saferpay.com/hosting/VerifyPayConfirm.asp')->cannotBeEmpty()->end()
-                            ->scalarNode('complete')->defaultValue('https://www.saferpay.com/hosting/PayCompleteV2.asp')->cannotBeEmpty()->end()
-                        ->end()
-                    ->end()
-                    ->arrayNode('validators')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->arrayNode('init')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('ACCOUNTID')->defaultValue('ns[..15]')->cannotBeEmpty()->end()
-                                    ->scalarNode('AMOUNT')->defaultValue('n[..8]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CURRENCY')->defaultValue('a[3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('DESCRIPTION')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ORDERID')->defaultValue('ans[..80]')->cannotBeEmpty()->end()
-                                    ->scalarNode('VTCONFIG')->defaultValue('an[..20]')->cannotBeEmpty()->end()
-                                    ->scalarNode('SUCCESSLINK')->defaultValue('ans[..1024]')->cannotBeEmpty()->end()
-                                    ->scalarNode('FAILLINK')->defaultValue('ans[..1024]')->cannotBeEmpty()->end()
-                                    ->scalarNode('BACKLINK')->defaultValue('ans[..1024]')->cannotBeEmpty()->end()
-                                    ->scalarNode('NOTIFYURL')->defaultValue('ans[..1024]')->cannotBeEmpty()->end()
-                                    ->scalarNode('AUTOCLOSE')->defaultValue('n[..2]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CCNAME')->defaultValue('a[..3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('NOTIFYADDRESS')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('USERNOTIFY')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('LANGID')->defaultValue('a[2]')->cannotBeEmpty()->end()
-                                    ->scalarNode('SHOWLANGUAGES')->defaultValue('a[..3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('PAYMENTMETHODS')->defaultValue('ns[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('DURATION')->defaultValue('n[14]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CARDREFID')->defaultValue('ans[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('DELIVERY')->defaultValue('a[..3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('APPEARANCE')->defaultValue('an[..7]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ADDRESS')->defaultValue('a[..8]')->cannotBeEmpty()->end()
-                                    ->scalarNode('COMPANY')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('GENDER')->defaultValue('a[1]')->cannotBeEmpty()->end()
-                                    ->scalarNode('FIRSTNAME')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('LASTNAME')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('STREET')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ZIP')->defaultValue('an[..10]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CITY')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('COUNTRY')->defaultValue('a[2]')->cannotBeEmpty()->end()
-                                    ->scalarNode('EMAIL')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                    ->scalarNode('PHONE')->defaultValue('ans[..50]')->cannotBeEmpty()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('confirm')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('MSGTYPE')->defaultValue('a[..30]')->cannotBeEmpty()->end()
-                                    ->scalarNode('VTVERIFY')->defaultValue('ans[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('KEYID')->defaultValue('ans[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ID')->defaultValue('an[28]')->cannotBeEmpty()->end()
-                                    ->scalarNode('TOKEN')->defaultValue('ans[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ACCOUNTID')->defaultValue('ns[..15]')->cannotBeEmpty()->end()
-                                    ->scalarNode('AMOUNT')->defaultValue('n[..8]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CURRENCY')->defaultValue('a[3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CARDREFID')->defaultValue('ans[..40]')->cannotBeEmpty()->end()
-                                    ->scalarNode('SCDRESULT')->defaultValue('n[..4]')->cannotBeEmpty()->end()
-                                    ->scalarNode('PROVIDERID')->defaultValue('n[..4]')->cannotBeEmpty()->end()
-                                    ->scalarNode('PROVIDERNAME')->defaultValue('ans[..30]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ORDERID')->defaultValue('an[..39]')->cannotBeEmpty()->end()
-                                    ->scalarNode('IP')->defaultValue('ns[..15]')->cannotBeEmpty()->end()
-                                    ->scalarNode('IPCOUNTRY')->defaultValue('a[2]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CCCOUNTRY')->defaultValue('a[2]')->cannotBeEmpty()->end()
-                                    ->scalarNode('MPI_LIABILITYSHIFT')->defaultValue('a[..3]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ECI')->defaultValue('n[1]')->cannotBeEmpty()->end()
-                                    ->scalarNode('XID')->defaultValue('ans[28]')->cannotBeEmpty()->end()
-                                    ->scalarNode('CAVV')->defaultValue('ans[28]')->cannotBeEmpty()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('complete')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('ID')->defaultValue('an[28]')->cannotBeEmpty()->end()
-                                    ->scalarNode('AMOUNT')->defaultValue('n[..8]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ACCOUNTID')->defaultValue('ns[..15]')->cannotBeEmpty()->end()
-                                    ->scalarNode('ACTION')->defaultValue('a[..10]')->cannotBeEmpty()->end()
-                                    ->scalarNode('MSGTYPE')->defaultValue('a[..30]')->cannotBeEmpty()->end()
-                                    ->scalarNode('RESULT')->defaultValue('n[..4]')->cannotBeEmpty()->end()
-                                    ->scalarNode('MESSAGE')->defaultValue('ans[30]')->cannotBeEmpty()->end()
-                                    ->scalarNode('AUTHMESSAGE')->defaultValue('ans[30]')->cannotBeEmpty()->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                    ->arrayNode('defaults')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->arrayNode('init')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('ACCOUNTID')->defaultValue('99867-94913159')->cannotBeEmpty()->end()
-                                    ->scalarNode('CURRENCY')->defaultValue('CHF')->cannotBeEmpty()->end()
-                                    ->scalarNode('LANGID')->defaultValue('CH')->cannotBeEmpty()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('confirm')->addDefaultsIfNotSet()->end()
-                            ->arrayNode('complete')->addDefaultsIfNotSet()->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
+        $root = $this->getRoot($treeBuilder);
+
+        $this
+            ->addUrlSection($root)
+            ->addValidatorsSection($root)
+            ->addDefaultsSection($root)
         ;
+
         return $treeBuilder;
+    }
+
+    /**
+     * @param TreeBuilder $treeBuilder
+     * @return NodeBuilder
+     */
+    protected function getRoot(TreeBuilder $treeBuilder)
+    {
+        return $treeBuilder->root('payment_saferpay')->children();
+    }
+
+    /**
+     * @param NodeBuilder $root
+     * @throws InvalidArgumentException
+     * @return Configuration
+     */
+    protected function addUrlSection(NodeBuilder $root)
+    {
+        if(!isset($this->saferpayConfig['urls'])){
+            throw new InvalidArgumentException("SaferpayConfig invalid - urls section not given");
+        }
+
+        $children = $root->arrayNode('urls')->addDefaultsIfNotSet()->children();
+        foreach($this->saferpayConfig['urls'] as $key => $value){
+            $children->scalarNode($key)->defaultValue($value)->cannotBeEmpty();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param NodeBuilder $root
+     * @throws InvalidArgumentException
+     * @return Configuration
+     */
+    protected function addValidatorsSection(NodeBuilder $root)
+    {
+        if(!isset($this->saferpayConfig['validators'])){
+            throw new InvalidArgumentException("SaferpayConfig invalid - validators section not given");
+        }
+
+        $children = $root->arrayNode('validators')->addDefaultsIfNotSet()->children();
+        foreach($this->saferpayConfig['validators'] as $key => $validator){
+            $validatorChildren = $children->arrayNode($key)->addDefaultsIfNotSet()->children();
+            foreach($validator as $key => $value){
+                $validatorChildren->scalarNode($key)->defaultValue($value)->cannotBeEmpty();
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param NodeBuilder $root
+     * @throws InvalidArgumentException
+     * @return Configuration
+     */
+    protected function addDefaultsSection(NodeBuilder $root)
+    {
+        if(!isset($this->saferpayConfig['defaults'])){
+            throw new InvalidArgumentException("SaferpayConfig invalid - defaults section not given");
+        }
+
+        $children = $root->arrayNode('defaults')->addDefaultsIfNotSet()->children();
+        foreach($this->saferpayConfig['defaults'] as $key => $validator){
+            $defaultsChildren = $children->arrayNode($key)->addDefaultsIfNotSet()->children();
+            foreach($validator as $key => $value){
+                $defaultsChildren->scalarNode($key)->defaultValue($value)->cannotBeEmpty();
+            }
+        }
+
+        return $this;
     }
 }
