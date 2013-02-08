@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "payment/saferpay": "master",
-        "payment/symfony-logger-bridge": "master",
+        "payment/saferpay": "dev-master",
+        "payment/symfony-logger-bridge": "dev-master",
         "symfony/config": ">=2.1.0,<2.3-dev",
         "symfony/http-kernel": ">=2.1.0,<2.3-dev", 
         "symfony/dependency-injection": ">=2.1.0,<2.3-dev"
