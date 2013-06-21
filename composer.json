@@ -8,14 +8,15 @@
         {
             "name": "Dominik Zogg",
             "email": "dominik.zogg@gmail.com"
+        },
+        {
+            "name": "Mike Meier",
+            "email": "sk.mykon@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.3.3",
-        "payment/saferpay": "1.*",
-        "payment/symfony-logger-bridge": "1.*",
-        "symfony/config": ">=2.1.0,<3.0",
-        "symfony/http-kernel": ">=2.1.0,<3.0", 
+        "payment/saferpay": "2.*",
         "symfony/dependency-injection": ">=2.1.0,<3.0"
     },
     "autoload": {
