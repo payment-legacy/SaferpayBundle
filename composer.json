@@ -17,7 +17,8 @@
     "require": {
         "php": ">=5.3.3",
         "payment/saferpay": "2.*",
-        "symfony/dependency-injection": ">=2.1.0,<3.0"
+        "symfony/dependency-injection": ">=2.1.0,<3.0",
+        "symfony/http-kernel": ">=2.1.0,<3.0"
     },
     "autoload": {
         "psr-0": { "Payment\\Bundle\\SaferpayBundle\\": "" }
