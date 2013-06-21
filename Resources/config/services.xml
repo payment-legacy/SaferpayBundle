@@ -6,8 +6,8 @@
 
     <parameters>
         <parameter key="payment.saferpay.saferpay.class">Payment\Saferpay\Saferpay</parameter>
-        <parameter key="payment.saferpay.httpclient.factory.class">Payment\Saferpay\Saferpay</parameter>
-        <parameter key="payment.saferpay.httpclient.buzz.class">Payment\HttpClient\BuzzCient</parameter>
+        <parameter key="payment.saferpay.httpclient.factory.class">Payment\Bundle\SaferpayBundle\Http\HttpClientFactory</parameter>
+        <parameter key="payment.saferpay.httpclient.buzz.class">Payment\HttpClient\BuzzClient</parameter>
     </parameters>
 
     <services>

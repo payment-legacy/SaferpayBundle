@@ -2,8 +2,7 @@
 
 namespace Payment\Bundle\SaferpayBundle\DependencyInjection;
 
-use Payment\Saferpay\Saferpay;
-
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -39,6 +38,24 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
+        $this->addPayInitSection($rootNode);
+
         return $treeBuilder;
+    }
+
+    /**
+     * @param NodeDefinition $node
+     */
+    protected function addPayInitSection(NodeDefinition $node)
+    {
+        $payInitSection = $node->children()->arrayNode('payinit')->children();
+
+        $payInitReflection = new \ReflectionClass("Payment\\Saferpay\\Data\\PayInitParameterInterface");
+        foreach($payInitReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
+            if(substr($method->getName(), 0, 3) != 'set'){
+                continue;
+            }
+            $payInitSection->scalarNode(lcfirst(substr($method->getName(), 3)));
+        }
     }
 }

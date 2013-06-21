@@ -26,9 +26,18 @@ class CompilerPass implements CompilerPassInterface
             new Reference($container->getParameter('payment.saferpay.httpclient.serviceid'))
         );
 
+        $loggerServiceId = $container->getParameter('payment.saferpay.logger.serviceid');
+        if($container->hasAlias($loggerServiceId)){
+            $loggerServiceId = $container->getAlias($loggerServiceId);
+        }
+
+        if(!$container->hasDefinition($loggerServiceId)){
+            return;
+        }
+
         $saferpayDefinition = $container->getDefinition($saferpayServiceId);
         $saferpayDefinition->addMethodCall('setLogger', array(
-            new Reference($container->getParameter('payment.saferpay.logger.serviceid'))
+            new Reference($loggerServiceId)
         ));
     }
 }
