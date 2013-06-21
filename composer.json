@@ -14,7 +14,7 @@
         "php": ">=5.3.3",
         "payment/saferpay": "1.*",
         "payment/symfony-logger-bridge": "1.*",
-        "symfony/config": "~2>=2.1.0",
+        "symfony/config": "~2,>=2.1.0",
         "symfony/http-kernel": "~2,>=2.1.0", 
         "symfony/dependency-injection": "~2,>=2.1.0"
     },
