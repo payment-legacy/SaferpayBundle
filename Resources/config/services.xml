@@ -7,12 +7,16 @@
     <parameters>
         <parameter key="payment.saferpay.saferpay.class">Payment\Saferpay\Saferpay</parameter>
         <parameter key="payment.saferpay.httpclient.factory.class">Payment\Bundle\SaferpayBundle\Http\HttpClientFactory</parameter>
+        <parameter key="payment.saferpay.payinitparameter.factory.class">Payment\Bundle\SaferpayBundle\PayInitParameter\PayInitParameterFactory</parameter>
         <parameter key="payment.saferpay.httpclient.buzz.class">Payment\HttpClient\BuzzClient</parameter>
+        <parameter key="payment.saferpay.payinitparameter.default.class">Payment\Saferpay\Data\PayInitParameter</parameter>
     </parameters>
 
     <services>
         <service id="payment.saferpay.saferpay" class="%payment.saferpay.saferpay.class%" />
         <service id="payment.saferpay.httpclient.factory" class="%payment.saferpay.httpclient.factory.class%" />
+        <service id="payment.saferpay.payinitparameter.factory" class="%payment.saferpay.payinitparameter.factory.class%" />
         <service id="payment.saferpay.httpclient.buzz" class="%payment.saferpay.httpclient.buzz.class%" />
+        <service id="payment.saferpay.payinitparameter.default" class="%payment.saferpay.payinitparameter.default.class%" />
     </services>
 </container>

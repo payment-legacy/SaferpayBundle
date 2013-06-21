@@ -48,14 +48,17 @@ class Configuration implements ConfigurationInterface
      */
     protected function addPayInitSection(NodeDefinition $node)
     {
-        $payInitSection = $node->children()->arrayNode('payinit')->children();
+        $payInitSection = $node->children()->arrayNode('payinitparameter')->children();
+        $payInitSection->scalarNode('serviceid')->defaultValue('payment.saferpay.payinitparameter.default');
+
+        $payInitSectionData = $payInitSection->arrayNode('data');
 
         $payInitReflection = new \ReflectionClass("Payment\\Saferpay\\Data\\PayInitParameterInterface");
         foreach($payInitReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
             if(substr($method->getName(), 0, 3) != 'set'){
                 continue;
             }
-            $payInitSection->scalarNode(lcfirst(substr($method->getName(), 3)));
+            $payInitSectionData->scalarNode(lcfirst(substr($method->getName(), 3)));
         }
     }
 }

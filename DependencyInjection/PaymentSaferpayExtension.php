@@ -22,6 +22,7 @@ class PaymentSaferpayExtension extends Extension
 
         $container->setParameter('payment.saferpay.logger.serviceid', $config['logger']['serviceid']);
         $container->setParameter('payment.saferpay.httpclient.serviceid', $config['httpclient']['serviceid']);
+        $container->setParameter('payment.saferpay.payinitparameter.defaults', $config['payinitparameter']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');

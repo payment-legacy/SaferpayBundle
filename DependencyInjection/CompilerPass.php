@@ -16,14 +16,27 @@ class CompilerPass implements CompilerPassInterface
     {
         $saferpayServiceId = 'payment.saferpay.saferpay';
         $httpClientFactoryServiceId = 'payment.saferpay.httpclient.factory';
+        $payInitParameterFactoryServiceId = 'payment.saferpay.payinitparameter.factory';
 
-        if(!$container->hasDefinition($httpClientFactoryServiceId) OR !$container->hasDefinition($saferpayServiceId)){
+        if(
+            !$container->hasDefinition($saferpayServiceId) OR
+            !$container->hasDefinition($httpClientFactoryServiceId) OR
+            !$container->hasDefinition($payInitParameterFactoryServiceId)
+        ){
             return;
         }
 
         $httpClientFactoryDefinition = $container->getDefinition($httpClientFactoryServiceId);
         $httpClientFactoryDefinition->addArgument(
             new Reference($container->getParameter('payment.saferpay.httpclient.serviceid'))
+        );
+
+        $payInitParameterFactoryDefinition = $container->getDefinition($payInitParameterFactoryServiceId);
+        $payInitParameterFactoryDefinition->addArgument(
+            new Reference($container->getParameter('payment.saferpay.payinitparameter.serviceid'))
+        );
+        $payInitParameterFactoryDefinition->addArgument(
+            $container->getParameter('payment.saferpay.payinitparameter.defaults')
         );
 
         $loggerServiceId = $container->getParameter('payment.saferpay.logger.serviceid');

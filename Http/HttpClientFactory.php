@@ -11,20 +11,19 @@ class HttpClientFactory
      */
     protected $client;
 
+    /**
+     * @param HttpClientInterface $client
+     */
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
     }
 
     /**
-     * @param bool $clone
      * @return HttpClientInterface
      */
-    public function getClient($clone = true)
+    public function getClient()
     {
-        if(true === $clone){
-            return clone $this->client;
-        }
-        return $this->client;
+        return clone $this->client;
     }
 }
