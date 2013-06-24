@@ -16,9 +16,10 @@ class PayInitParameterFactory
         foreach($payInitParameterData as $key => $value){
             if(!is_null($value)){
                 $method = 'set'.ucfirst($key);
-                $payInitParameterData->{$method}($value);
+                $payInitParameter->{$method}($value);
             }
         }
+        $this->payInitParameter = $payInitParameter;
     }
 
     /**

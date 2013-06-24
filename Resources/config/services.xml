@@ -13,10 +13,23 @@
     </parameters>
 
     <services>
-        <service id="payment.saferpay.saferpay" class="%payment.saferpay.saferpay.class%" />
-        <service id="payment.saferpay.httpclient.factory" class="%payment.saferpay.httpclient.factory.class%" />
-        <service id="payment.saferpay.payinitparameter.factory" class="%payment.saferpay.payinitparameter.factory.class%" />
         <service id="payment.saferpay.httpclient.buzz" class="%payment.saferpay.httpclient.buzz.class%" />
+
+        <service
+            id="payment.saferpay.httpclient.client"
+            factory-service="payment.saferpay.httpclient.factory"
+            factory-method="getClient"
+            class="%payment.saferpay.httpclient.factory.class%"
+        ></service>
+        <service id="payment.saferpay.httpclient.factory" class="%payment.saferpay.httpclient.factory.class%" />
+
+        <service id="payment.saferpay.saferpay" class="%payment.saferpay.saferpay.class%">
+            <call method="setHttpClient">
+                <argument type="service" id="payment.saferpay.httpclient.client" />
+            </call>
+        </service>
+
+        <service id="payment.saferpay.payinitparameter.factory" class="%payment.saferpay.payinitparameter.factory.class%" />
         <service id="payment.saferpay.payinitparameter.default" class="%payment.saferpay.payinitparameter.default.class%" />
     </services>
 </container>

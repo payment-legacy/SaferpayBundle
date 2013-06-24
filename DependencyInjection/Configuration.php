@@ -14,6 +14,11 @@ class Configuration implements ConfigurationInterface
     protected $saferpayConfig;
 
     /**
+     * @var string
+     */
+    protected $payInitParameterInterface = "Payment\\Saferpay\\Data\\PayInitParameterInterface";
+
+    /**
      * @return TreeBuilder
      */
     public function getConfigTreeBuilder()
@@ -48,17 +53,18 @@ class Configuration implements ConfigurationInterface
      */
     protected function addPayInitSection(NodeDefinition $node)
     {
-        $payInitSection = $node->children()->arrayNode('payinitparameter')->children();
+        $payInitSection = $node->children()->arrayNode('payinitparameter')->addDefaultsIfNotSet()->children();
+
         $payInitSection->scalarNode('serviceid')->defaultValue('payment.saferpay.payinitparameter.default');
 
-        $payInitSectionData = $payInitSection->arrayNode('data');
+        $payInitSectionData = $payInitSection->arrayNode('data')->addDefaultsIfNotSet()->children();
 
-        $payInitReflection = new \ReflectionClass("Payment\\Saferpay\\Data\\PayInitParameterInterface");
+        $payInitReflection = new \ReflectionClass($this->payInitParameterInterface);
         foreach($payInitReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
             if(substr($method->getName(), 0, 3) != 'set'){
                 continue;
             }
-            $payInitSectionData->scalarNode(lcfirst(substr($method->getName(), 3)));
+            $payInitSectionData->scalarNode(lcfirst(substr($method->getName(), 3)))->defaultValue(null);
         }
     }
 }
