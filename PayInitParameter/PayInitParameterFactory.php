@@ -18,6 +18,9 @@ class PayInitParameterFactory
     public function __construct(PayInitParameterWithDataInterface $payInitParameter, array $payInitParameterData = array())
     {
         foreach($payInitParameterData as $key => $value){
+            if(is_null($value)){
+                continue;
+            }
             $method = 'set'.ucfirst($key);
             $payInitParameter->{$method}($value);
         }
