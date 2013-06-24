@@ -22,7 +22,7 @@ class HttpClientFactory
     /**
      * @return HttpClientInterface
      */
-    public function getClient()
+    public function createClient()
     {
         return clone $this->client;
     }

@@ -11,13 +11,15 @@ class PayInitParameterFactory
      */
     protected $payInitParameter;
 
-    public function __construct(PayInitParameterWithDataInterface $payInitParameter, array $payInitParameterData)
+    /**
+     * @param PayInitParameterWithDataInterface $payInitParameter
+     * @param array $payInitParameterData
+     */
+    public function __construct(PayInitParameterWithDataInterface $payInitParameter, array $payInitParameterData = array())
     {
         foreach($payInitParameterData as $key => $value){
-            if(!is_null($value)){
-                $method = 'set'.ucfirst($key);
-                $payInitParameter->{$method}($value);
-            }
+            $method = 'set'.ucfirst($key);
+            $payInitParameter->{$method}($value);
         }
         $this->payInitParameter = $payInitParameter;
     }
@@ -25,7 +27,7 @@ class PayInitParameterFactory
     /**
      * @return PayInitParameterWithDataInterface
      */
-    public function getPayInitParameter()
+    public function createPayInitParameter()
     {
         return clone $this->payInitParameter;
     }
