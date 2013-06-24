@@ -14,7 +14,7 @@ class CompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $saferpayServiceId = 'payment.saferpay.saferpay';
+        $saferpayServiceId = 'payment.saferpay';
         $httpClientFactoryServiceId = 'payment.saferpay.httpclient.factory';
         $payInitParameterFactoryServiceId = 'payment.saferpay.payinitparameter.factory';
 
