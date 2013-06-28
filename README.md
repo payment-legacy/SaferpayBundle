@@ -67,4 +67,4 @@ A simple inofficial implementation of the saferpay payment service as a symfony 
 
 ### controller
 
-    [See Test SaferpayController](https://github.com/payment/SaferpayBundle/Controller/SaferpayController.php)
+[See Test SaferpayController](https://github.com/payment/SaferpayBundle/Controller/SaferpayController.php)
