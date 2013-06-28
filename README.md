@@ -12,7 +12,7 @@ A simple inofficial implementation of the saferpay payment service as a symfony 
 
     {
         "require": {
-            "payment/saferpay-bundle": "1.*"
+            "payment/saferpay-bundle": "2.*"
         }
     }
 
