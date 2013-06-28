@@ -3,6 +3,7 @@
 namespace Payment\Bundle\SaferpayBundle\PayInitParameter;
 
 use Payment\Saferpay\Data\PayInitParameterWithDataInterface;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class PayInitParameterFactory
 {
@@ -22,6 +23,9 @@ class PayInitParameterFactory
                 continue;
             }
             $method = 'set'.ucfirst($key);
+            if(!method_exists($payInitParameter, $method)){
+                throw new InvalidArgumentException($method .' Method not found');
+            }
             $payInitParameter->{$method}($value);
         }
         $this->payInitParameter = $payInitParameter;
