@@ -3,7 +3,6 @@
 namespace Payment\Bundle\SaferpayBundle\Tests\PayInitParameter;
 
 use Payment\Saferpay\Data\PayInitParameter;
-use Payment\Saferpay\Data\PayInitParameterWithDataInterface;
 use Payment\Bundle\SaferpayBundle\PayInitParameter\PayInitParameterFactory;
 
 class PayInitParameterFactoryTest extends \PHPUnit_Framework_TestCase
