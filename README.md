@@ -2,7 +2,7 @@
 
 A simple inofficial implementation of the saferpay payment service as a symfony bundle.
 
-[![Build Status](https://secure.travis-ci.org/Payment/PaymentSaferpayBundle.png?branch=master)](http://travis-ci.org/Payment/PaymentSaferpayBundle)
+[![Build Status](https://secure.travis-ci.org/Payment/SaferpayBundle.png?branch=master)](http://travis-ci.org/Payment/SaferpayBundle)
 [![Total Downloads](https://poser.pugx.org/payment/saferpay-bundle/downloads.png)](https://packagist.org/packages/payment/saferpay-bundle)
 [![Latest Stable Version](https://poser.pugx.org/payment/saferpay-bundle/v/stable.png)](https://packagist.org/packages/payment/saferpay-bundle)
 
