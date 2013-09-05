@@ -65,56 +65,4 @@ A simple inofficial implementation of the saferpay payment service as a symfony 
                 phone:                ~
 
 ## Usage in your controller
-	
-    
-    <?php
-    
-    namespace Acme\Bundle\PaymentBundle\Controller;
-    
-    use Payment\Bundle\SaferpayBundle\Controller\PaymentFinishedResponse;
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-    use Payment\Saferpay\Data\PayInitParameterInterface;
-    use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-    
-    class SaferpayController extends Controller
-    {
-        public function payAction(Request $request)
-        {
-            $router = $this->get('router');
-            $route  = $request->get('_route');
-    
-            $parameters = array(
-                'amount'        => 50000,
-                'currency'      => 'CHF',
-                'description'   => 'Order 1',
-                'orderid'       => 1865,
-                'successlink'   => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_OK), true),
-                'faillink'      => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'fail'), true),
-                'backlink'      => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'back'), true), 'firstname'     => 'Firstname',
-                'lastname'      => 'Lastname',
-                'street'        => 'Street',
-                'zip'           => '8000',
-                'city'          => 'City',
-                'country'       => 'CH',
-                'email'         => 'john.doe@example.com',
-                'gender'        => PayInitParameterInterface::GENDER_MALE
-            );
-    
-            $payment = $this->get('payment.saferpay')
-                ->setParameters($parameters)
-                ->pay(true);
-    
-            if ($payment instanceof PaymentFinishedResponse){
-                if ('error' == $payment->getStatus()) {
-                    throw new BadRequestHttpException(sprintf('Payment failed with error: %s', $payment->getErrorCode()));
-                }elseif ('ok' == $payment->getStatus()) {
-    
-                    //Payment has been sucessful.
-                    //Return response of your choice.
-    
-                }
-            }
-    
-            return $payment;
-        }
-    }
+	        <?php        namespace Ticketpark\Bundle\PaymentBundle\Controller;        use Payment\Bundle\SaferpayBundle\Controller\PaymentFinishedResponse;    use Symfony\Bundle\FrameworkBundle\Controller\Controller;    use Payment\Saferpay\Data\PayInitParameterInterface;    use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;        class SaferpayController extends Controller    {        public function payAction(Request $request)        {            $router = $this->get('router');            $route  = $request->get('_route');                $parameters = array(                'amount'        => 50000,                'currency'      => 'CHF',                'description'   => 'Order 1',                'orderid'       => 1865,                'successlink'   => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_OK), true),                'faillink'      => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'fail'), true),                'backlink'      => $router->generate($route, array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'back'), true), 'firstname'     => 'Firstname',                'lastname'      => 'Lastname',                'street'        => 'Street',                'zip'           => '8000',                'city'          => 'City',                'country'       => 'CH',                'email'         => 'john.doe@example.com',                'gender'        => PayInitParameterInterface::GENDER_MALE            );                $payment = $this->get('payment.saferpay')                ->setParameters($parameters)                ->pay(true);                if ($payment instanceof PaymentFinishedResponse){                if ('error' == $payment->getStatus()) {                    throw new BadRequestHttpException(sprintf('Payment failed with error: %s', $payment->getErrorCode()));                }elseif ('ok' == $payment->getStatus()) {                        //Payment has been sucessful.                    //Return response of your choice.                    }            }                return $payment;        }    }

@@ -74,6 +74,11 @@ abstract class SaferpayController
         $payInitParameter = $this->getPayInitParameter($testMode);
 
         $request = $this->getContainer()->get('request');
+
+        if($request->query->get('DATA')){
+            $responseDataXml = new \SimpleXMLElement(stripslashes($request->query->get('DATA')));
+        }
+
         switch($request->query->get('status')){
             case PaymentFinishedResponse::STATUS_OK:
                 try {
@@ -81,25 +86,25 @@ abstract class SaferpayController
 
                     if(true === $this->validatePayConfirmParameter($payConfirmParameter, $payInitParameter)){
                         if(false === $doCompletePayment){
-                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION);
+                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION, $responseDataXml->attributes());
                         }
 
                         $payCompleteResponse = $saferpay->payCompleteV2($payConfirmParameter, 'Settlement');
                         if($payCompleteResponse->getResult() == '0'){
-                            return new PaymentFinishedResponse();
+                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_OK, null, $responseDataXml->attributes());
                         }
 
-                        return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION);
+                        return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION, $responseDataXml->attributes());
                     }
 
                     $saferpay->payCompleteV2($payConfirmParameter, 'Cancel');
-                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION);
+                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION, $responseDataXml->attributes());
                 }catch(\Exception $e){
-                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION);
+                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION, $responseDataXml->attributes());
                 }
                 break;
             case PaymentFinishedResponse::STATUS_ERROR:
-                return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, $request->query->get('error'));
+                return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, $request->query->get('error'), $responseDataXml->attributes());
                 break;
         }
 
@@ -107,9 +112,9 @@ abstract class SaferpayController
             if($url = $saferpay->createPayInit($payInitParameter)){
                 return new RedirectResponse($url);
             }
-            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror');
+            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror', $responseDataXml->attributes());
         }catch(\Exception $e){
-            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror');
+            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror', $responseDataXml->attributes());
         }
     }
 
