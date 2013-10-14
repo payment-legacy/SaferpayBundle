@@ -57,7 +57,7 @@ abstract class SaferpayController
      * @param bool $doCompletePayment
      * @return PaymentFinishedResponse|RedirectResponse
      */
-    public function pay($doCompletePayment = true, $testMode = true)
+    public function pay($doCompletePayment = true, $testMode = true, $notificationMode=false)
     {
         $requiredParameters = array('amount', 'currency', 'description');
         foreach($requiredParameters as $requiredParameter){
@@ -74,15 +74,25 @@ abstract class SaferpayController
         $payInitParameter = $this->getPayInitParameter($testMode);
 
         $request = $this->getContainer()->get('request');
+        $notification = false;
 
-        if($request->query->get('DATA')){
-            $responseDataXml = new \SimpleXMLElement(stripslashes($request->query->get('DATA')));
+        if ($notificationMode) {
+            $saferpayData      = $request->request->get('DATA');
+            $saferpaySignature = $request->request->get('SIGNATURE');
+        } else {
+            $saferpayData      = $request->query->get('DATA');
+            $saferpaySignature = $request->query->get('SIGNATURE');
         }
 
-        switch($request->query->get('status')){
+        if($saferpayData){
+            $responseDataXml = new \SimpleXMLElement(stripslashes($saferpayData));
+        }
+
+        switch($request->query->get('status') || $notificationMode){
             case PaymentFinishedResponse::STATUS_OK:
                 try {
-                    $payConfirmParameter = $saferpay->verifyPayConfirm($request->query->get('DATA'), $request->query->get('SIGNATURE'));
+
+                    $payConfirmParameter = $saferpay->verifyPayConfirm($saferpayData, $saferpaySignature);
 
                     if(true === $this->validatePayConfirmParameter($payConfirmParameter, $payInitParameter)){
                         if(false === $doCompletePayment){
