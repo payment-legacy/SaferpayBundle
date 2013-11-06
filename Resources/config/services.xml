@@ -27,6 +27,9 @@
             <call method="setHttpClient">
                 <argument type="service" id="payment.saferpay.httpclient.client" />
             </call>
+            <call method="setLogger">
+                <argument type="service" id="logger" />
+            </call>
         </service>
 
         <service id="payment.saferpay.payinitparameter.factory" class="%payment.saferpay.payinitparameter.factory.class%" />
