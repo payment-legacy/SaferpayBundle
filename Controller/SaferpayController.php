@@ -57,7 +57,7 @@ abstract class SaferpayController
      * @param bool $doCompletePayment
      * @return PaymentFinishedResponse|RedirectResponse
      */
-    public function pay($doCompletePayment = true, $testMode = true, $notificationMode=false)
+    public function pay($doCompletePayment = true, $testMode = true, $notificationMode = false)
     {
         $requiredParameters = array('amount', 'currency', 'description');
         foreach($requiredParameters as $requiredParameter){
@@ -74,7 +74,6 @@ abstract class SaferpayController
         $payInitParameter = $this->getPayInitParameter($testMode);
 
         $request = $this->getContainer()->get('request');
-        $notification = false;
 
         if ($notificationMode) {
             $saferpayData      = $request->request->get('DATA');
@@ -88,10 +87,9 @@ abstract class SaferpayController
             $responseDataXml = new \SimpleXMLElement(stripslashes($saferpayData));
         }
 
-        switch($request->query->get('status') || $notificationMode){
+        switch($request->query->get('status')){
             case PaymentFinishedResponse::STATUS_OK:
                 try {
-
                     $payConfirmParameter = $saferpay->verifyPayConfirm($saferpayData, $saferpaySignature);
 
                     if(true === $this->validatePayConfirmParameter($payConfirmParameter, $payInitParameter)){
@@ -113,8 +111,9 @@ abstract class SaferpayController
                     return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION, $responseDataXml->attributes());
                 }
                 break;
+
             case PaymentFinishedResponse::STATUS_ERROR:
-                return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, $request->query->get('error'), $responseDataXml->attributes());
+                return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, $request->query->get('error'));
                 break;
         }
 

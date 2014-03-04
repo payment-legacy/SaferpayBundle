@@ -80,8 +80,9 @@ class PaymentFinishedResponse
 
     public function getResponseAttribute($attribute)
     {
-        $attributes = $this->getResponseAttributes();
+        if ($this->getResponseAttributes()) {
 
-        return $this->getResponseAttributes()->$attribute;
+            return $this->getResponseAttributes()->$attribute;
+        }
     }
 }
