@@ -26,5 +26,6 @@
     },
     "autoload": {
         "psr-4": { "Payment\\Bundle\\SaferpayBundle\\": "" }
-    }
+    },
+    "abandoned": true
 }
