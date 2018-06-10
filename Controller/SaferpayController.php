@@ -8,45 +8,110 @@ use Payment\Saferpay\Saferpay;
 use Payment\Saferpay\Data\PayConfirmParameterInterface;
 use Payment\Saferpay\Data\PayInitParameterInterface;
 use Payment\Saferpay\Data\PayInitParameterWithDataInterface;
+use Payment\Bundle\SaferpayBundle\Controller\PaymentFinishedResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class SaferpayController
 {
+    protected $initParameters = array();
+
+    /**
+     * Set init parameters
+     *
+     * See Payment\Saferpay\Data for available parameters.
+     *
+     * Example:
+     * array(
+     *   'amount'   => 5000,
+     *   'currency' => 'CHF'
+     * );
+     * will call the methods setAmount(5000) and setCurrency('CHF').
+     *
+     * @param array $initParameters
+     */
+    public function setParameters($initParameters = array())
+    {
+        $this->initParameters = $initParameters;
+
+        return $this;
+    }
+
+    /**
+     * Set a single parameter
+     *
+     * setParameter('amount', 5000)
+     * will call the method setAmount(5000)
+     *
+     * @param  $key
+     * @param  $value
+     * @return $this
+     */
+    public function setParameter($key, $value)
+    {
+        $this->initParameters[$key] = $value;
+
+        return $this;
+    }
+
     /**
      * @param bool $doCompletePayment
      * @return PaymentFinishedResponse|RedirectResponse
      */
-    protected function pay($doCompletePayment = true) // if complete payment should be done, not only amount reservation
+    public function pay($doCompletePayment = true, $testMode = true, $notificationMode = false)
     {
-        /* @var Saferpay $saferpay */
-        $saferpay = $this->getContainer()->get('payment.saferpay');
-        $payInitParameter = $this->getPayInitParameter(true);
+        $requiredParameters = array('amount', 'currency', 'description');
+        foreach($requiredParameters as $requiredParameter){
+            if(!array_key_exists($requiredParameter, $this->initParameters)){
+                return new PaymentFinishedResponse(
+                    PaymentFinishedResponse::STATUS_ERROR,
+                    sprintf('The payment parameter "%s" must be set.', $requiredParameter)
+                );
+            }
+        }
 
-        $request = $this->getContainer()->get('request'); // in symfony you will have $this->getRequest() in your controller
+        /* @var Saferpay $saferpay */
+        $saferpay = $this->getContainer()->get('payment.saferpay.handler');
+        $payInitParameter = $this->getPayInitParameter($testMode);
+
+        $request = $this->getContainer()->get('request');
+
+        if ($notificationMode) {
+            $saferpayData      = $request->request->get('DATA');
+            $saferpaySignature = $request->request->get('SIGNATURE');
+        } else {
+            $saferpayData      = $request->query->get('DATA');
+            $saferpaySignature = $request->query->get('SIGNATURE');
+        }
+
+        if($saferpayData){
+            $responseDataXml = new \SimpleXMLElement(stripslashes($saferpayData));
+        }
+
         switch($request->query->get('status')){
             case PaymentFinishedResponse::STATUS_OK:
                 try {
-                    $payConfirmParameter = $saferpay->verifyPayConfirm($request->query->get('DATA'), $request->query->get('SIGNATURE'));
+                    $payConfirmParameter = $saferpay->verifyPayConfirm($saferpayData, $saferpaySignature);
 
                     if(true === $this->validatePayConfirmParameter($payConfirmParameter, $payInitParameter)){
                         if(false === $doCompletePayment){
-                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION);
+                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION, $responseDataXml->attributes());
                         }
 
                         $payCompleteResponse = $saferpay->payCompleteV2($payConfirmParameter, 'Settlement');
-                        if($payCompleteResponse->getResult() != '0'){
-                            return new PaymentFinishedResponse();
+                        if($payCompleteResponse->getResult() == '0'){
+                            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_OK, null, $responseDataXml->attributes());
                         }
 
-                        return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION);
+                        return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_COMPLETION, $responseDataXml->attributes());
                     }
 
                     $saferpay->payCompleteV2($payConfirmParameter, 'Cancel');
-                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION);
+                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION, $responseDataXml->attributes());
                 }catch(\Exception $e){
-                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION);
+                    return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, PaymentFinishedResponse::ERROR_VALIDATION, $responseDataXml->attributes());
                 }
                 break;
+
             case PaymentFinishedResponse::STATUS_ERROR:
                 return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, $request->query->get('error'));
                 break;
@@ -56,9 +121,9 @@ abstract class SaferpayController
             if($url = $saferpay->createPayInit($payInitParameter)){
                 return new RedirectResponse($url);
             }
-            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror');
+            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror', $responseDataXml->attributes());
         }catch(\Exception $e){
-            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror');
+            return new PaymentFinishedResponse(PaymentFinishedResponse::STATUS_ERROR, 'connectionerror', $responseDataXml->attributes());
         }
     }
 
@@ -81,36 +146,23 @@ abstract class SaferpayController
         /* @var PayInitParameterFactory $payInitFactory */
         $payInitFactory = $this->getContainer()->get('payment.saferpay.payinitparameter.factory');
 
-        $router = $this->getContainer()->get('router');
-
         $payInitParameter = $payInitFactory->createPayInitParameter();
 
         $providerSet = null;
 
         if(true === $testMode){
-            $payInitParameter->setAccountid('99867-94913159');
-            $payInitParameter->setPaymentmethods($payInitParameter::PAYMENTMETHOD_SAFERPAY_TESTCARD);
+            $payInitParameter->setAccountid($payInitParameter::SAFERPAYTESTACCOUNT_ACCOUNTID);
+            $payInitParameter->setPaymentmethods(array($payInitParameter::PAYMENTMETHOD_SAFERPAY_TESTCARD));
         }else{
             $payInitParameter->setPaymentmethods(array($payInitParameter::PAYMENTMETHOD_MASTERCARD, $payInitParameter::PAYMENTMETHOD_VISA));
         }
 
-        $payInitParameter
-            ->setAmount(55050) // 550.50
-            ->setDescription(sprintf('Order %s', 1))
-            ->setOrderid(1)
-            ->setSuccesslink($router->generate('saferpay_payment', array('status' => PaymentFinishedResponse::STATUS_OK), true))
-            ->setFaillink($router->generate('saferpay_payment', array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'fail'), true))
-            ->setBacklink($router->generate('saferpay_payment', array('status' => PaymentFinishedResponse::STATUS_ERROR, 'error' => 'back'), true))
-            ->setFirstname('Firstname')
-            ->setLastname('Lastname')
-            ->setStreet('Street')
-            ->setZip('8000')
-            ->setCity('City')
-            ->setCountry('CH')
-            ->setEmail('john.doe@example.com')
-            ->setCurrency('CHF')
-            ->setGender($payInitParameter::GENDER_MALE)
-        ;
+        foreach($this->initParameters as $key => $value){
+            $methodName = 'set'.ucfirst($key);
+            if(method_exists($payInitParameter, $methodName)){
+                $payInitParameter->$methodName($value);
+            }
+        }
 
         return $payInitParameter;
     }

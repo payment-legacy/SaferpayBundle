@@ -5,7 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="payment.saferpay.saferpay.class">Payment\Saferpay\Saferpay</parameter>
+        <parameter key="payment.saferpay.service.class">Payment\Bundle\SaferpayBundle\Services\SaferpayPayment</parameter>
+        <parameter key="payment.saferpay.handler.class">Payment\Saferpay\Saferpay</parameter>
         <parameter key="payment.saferpay.httpclient.factory.class">Payment\Bundle\SaferpayBundle\Http\HttpClientFactory</parameter>
         <parameter key="payment.saferpay.payinitparameter.factory.class">Payment\Bundle\SaferpayBundle\PayInitParameter\PayInitParameterFactory</parameter>
         <parameter key="payment.saferpay.httpclient.buzz.class">Payment\HttpClient\BuzzClient</parameter>
@@ -13,6 +14,11 @@
     </parameters>
 
     <services>
+
+        <service id="payment.saferpay" class="%payment.saferpay.service.class%">
+            <argument type="service" id="service_container" />
+        </service>
+
         <service id="payment.saferpay.httpclient.buzz" class="%payment.saferpay.httpclient.buzz.class%" />
 
         <service
@@ -23,7 +29,7 @@
         ></service>
         <service id="payment.saferpay.httpclient.factory" class="%payment.saferpay.httpclient.factory.class%" />
 
-        <service id="payment.saferpay" class="%payment.saferpay.saferpay.class%">
+        <service id="payment.saferpay.handler" class="%payment.saferpay.handler.class%">
             <call method="setHttpClient">
                 <argument type="service" id="payment.saferpay.httpclient.client" />
             </call>

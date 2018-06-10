@@ -25,10 +25,11 @@ class PaymentFinishedResponse
      * @param string $status
      * @param int $errorCode
      */
-    public function __construct($status = self::STATUS_OK, $errorCode = null)
+    public function __construct($status = self::STATUS_OK, $errorCode = null, $responseAttributes = null)
     {
         $this->setStatus($status);
         $this->setErrorCode($errorCode);
+        $this->setResponseAttributes($responseAttributes);
     }
 
     /**
@@ -65,5 +66,23 @@ class PaymentFinishedResponse
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function setResponseAttributes($responseAttributes)
+    {
+        $this->responseAttributes = $responseAttributes;
+    }
+
+    public function getResponseAttributes()
+    {
+        return $this->responseAttributes;
+    }
+
+    public function getResponseAttribute($attribute)
+    {
+        if ($this->getResponseAttributes()) {
+
+            return $this->getResponseAttributes()->$attribute;
+        }
     }
 }
